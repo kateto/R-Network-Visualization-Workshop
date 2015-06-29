@@ -219,7 +219,7 @@ plot(net, edge.arrow.size=.4, edge.curved=0,
 
 # The second way to set attributes is to add them to the igraph object.
 
-# Generate colors base on media type:
+# Generate colors based on media type:
 colrs <- c("gray50", "tomato", "gold")
 V(net)$color <- colrs[V(net)$media.type]
 
