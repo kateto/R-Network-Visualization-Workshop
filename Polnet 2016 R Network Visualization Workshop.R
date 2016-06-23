@@ -54,7 +54,7 @@ install.packages("ndtv", dependencies=T)
 install.packages("RColorBrewer")
 install.packages("extrafont")
 install.packages("png")
-install.packages('animation')
+install.packages("animation")
 install.packages("maps")
 install.packages("geosphere")
  
@@ -67,18 +67,29 @@ install.packages("geosphere")
 
 #  ------->> Colors in R plots --------
 
+
+# --COLORS--
+
 # In most R functions, you can use named colors, hex, or rgb values:
-# (In the simple base plot chart below x and y are point coordinates, pch 
-# is the point symbol shape, cex is the point size, and col is the color.
-# to see the parameters for plotting in base R, check out ?par
 
 plot(x=1:10, y=rep(5,10), pch=19, cex=5, col="dark red")
 points(x=1:10, y=rep(6, 10), pch=19, cex=5, col="#557799")
 points(x=1:10, y=rep(4, 10), pch=19, cex=5, col=rgb(.25, .5, .3))
 
+# In the simple base plot chart above, x and y are point coordinates, 'pch' 
+# is the point symbol shape, 'cex' is the point size, and 'col' is the color.
+# to see the parameters for plotting in base R, check out ?par
+
+# If you plan on using the built-in color names, here's what they are: 
+colors() # all colors
+grep("blue", colors(), value=T) # colors that have 'blue' in the name
+
 # You may notice that rgb here ranges from 0 to 1. While this is the R default,
 # you can also set it for the more typical 0-255 range: 
 rgb(10, 100, 100, maxColorValue=255) 
+
+
+# --TRANSPARENCY--
 
 # We can also set the opacity/transparency using the parameter 'alpha' (range 0-1):
 plot(x=1:5, y=rep(5,5), pch=19, cex=16, col=rgb(.25, .5, .3, alpha=.5), xlim=c(0,6))  
@@ -88,13 +99,14 @@ plot(x=1:5, y=rep(5,5), pch=19, cex=16, col=rgb(.25, .5, .3, alpha=.5), xlim=c(0
 # the plot background to black using the par() function for graphical parameters.
 # We could also set the margins in par() with mar=c(bottom, left, top, right).
 par(bg="black")
+
 col.tr <- grDevices::adjustcolor("#557799", alpha=0.7)
 plot(x=1:5, y=rep(5,5), pch=19, cex=20, col=col.tr, xlim=c(0,6)) 
+
 par(bg="white")
 
-# If you plan on using the built-in color names, here's what they are: 
-colors() # all colors
-grep("blue", colors(), value=T) # colors that have 'blue' in the name
+
+# --PALETTES--
 
 # In many cases, we need a number of contrasting colors, or multiple shades of a color.
 # R comes with some predefined palette function that can generate those for us.
@@ -104,7 +116,7 @@ plot(x=1:10, y=1:10, pch=19, cex=10, col=pal1)
 par(new=TRUE) # tells R not to clear the first plot before adding the second one
 plot(x=10:1, y=1:10, pch=19, cex=10, col=pal2)
 
-# We can also generate our own gradients using colorRampPalette.
+# We can also generate our own gradients using colorRampPalette().
 # Note that colorRampPalette returns a *function* that we can use 
 # to generate as many colors from that palette as we need.
 
@@ -114,6 +126,9 @@ plot(x=10:1, y=1:10, pch=19, cex=10, col=palf(10))
 # To add transparency to colorRampPalette, you need to add a parameter `alpha=TRUE`:
 palf <- colorRampPalette(c(rgb(1,1,1, .2),rgb(.8,0,0, .7)), alpha=TRUE)
 plot(x=10:1, y=1:10, pch=19, cex=10, col=palf(10)) 
+
+
+# --COLORBREWER--
 
 # Finding good color combinations is a tough task - and the built-in R palettes
 # are rather limited. Thankfully there are other available packages for this:
@@ -146,6 +161,7 @@ dev.off() # shut off the  graphic device to clear the two-figure configuration.
 
 
 detach("package:RColorBrewer")
+
 
 
 
@@ -189,9 +205,9 @@ detach("package:extrafont")
 # ================ 2. Reading in the network data ================
 
 
-# Download the archive with the data files from http://bit.ly/polnet2016  
+# Download an archive with the data files from http://bit.ly/polnet2016  
 
-# Clear your workspace by removing all objects returned by ls()
+# Clear your workspace by removing all objects returned by ls():
 rm(list = ls()) 
  
 # Set the working directory to the folder containing the workshop files:
@@ -201,7 +217,8 @@ setwd("C:/polnet2016")
 # "Session" menu -> "Set Working Directory" -> "To Source File Location"
 
 
-# DATASET 1: edgelist 
+
+# --DATASET 1: edgelist--
 
 nodes <- read.csv("./Data files/Dataset1-Media-Example-NODES.csv", header=T, as.is=T)
 links <- read.csv("./Data files/Dataset1-Media-Example-EDGES.csv", header=T, as.is=T)
@@ -209,6 +226,7 @@ links <- read.csv("./Data files/Dataset1-Media-Example-EDGES.csv", header=T, as.
 # Examine the data:
 head(nodes)
 head(links)
+
 nrow(nodes); length(unique(nodes$id))
 nrow(links); nrow(unique(links[,c("from", "to")]))
 nrow(unique(links[,c("from", "to", "type")]))
@@ -223,7 +241,8 @@ rownames(links) <- NULL
 nrow(links); nrow(unique(links[,c("from", "to")]))
 
 
-# DATASET 2: matrix 
+
+# --DATASET 2: matrix--
 
 nodes2 <- read.csv("./Data files/Dataset2-Media-User-Example-NODES.csv", header=T, as.is=T)
 links2 <- read.csv("./Data files/Dataset2-Media-User-Example-EDGES.csv", header=T, row.names=1)
@@ -372,10 +391,10 @@ plot(net, edge.color="orange", vertex.color="gray50")
 
 
 # We can also add a legend explaining the meaning of the colors we used:
-# (below 'x' and 'y' are the legend coordinates, 'col' is the element's 
-# color, 'pch' is the element symbol,  pt.bg is the border color, pt.cex 
-# is thesymbol size, 'bty' is the type of box around the legend, and
-# 'ncol' is the number of columns in which the legend is set).
+# (below 'x' and 'y' are the legend coordinates, 'pch' is the element symbol, 
+# 'pt.bg' is the point's background color, 'col' is the border color, 
+# 'pt.cex' is the symbol size, 'bty' is the type of box around the legend,
+# and 'ncol' is the number of columns in which the legend is set).
 
 plot(net) 
 legend(x=-1.1, y=-1.1, c("Newspaper","Television", "Online News"), pch=21,
@@ -391,10 +410,10 @@ plot(net, vertex.shape="none", vertex.label=V(net)$media,
 
 
 # Let's color the edges of the graph based on their source node color.
-# We'll get the starting node for each edge with "ends()".
-# It provides the start & end for each edge in 'es', and 'names' controls
-# whether ends() will return node names or IDs.
-edge.start <- ends(net, es=E(net), names=F)[,1]
+# Here 'ends()' gives us the start & end for each edge in 'es', and 
+# 'names' controls whether 'ends()' will return node names or IDs.
+
+edge.start <- ends(net, es=E(net), names=F)[,1] # get the "from" node
 edge.col <- V(net)$color[edge.start]
 
 plot(net, edge.color=edge.col, edge.curved=.1)
@@ -418,7 +437,8 @@ V(net.bg)$label <- ""
 E(net.bg)$arrow.mode <- 0
 plot(net.bg)
 
-# Now let's plot this network using the layouts available in igraph
+# Now let's plot this network using the layouts available in igraph.
+
 # You can set the layout in the plot function:
 plot(net.bg, layout=layout_randomly)
 
@@ -433,7 +453,7 @@ l <- cbind(1:vcount(net.bg), c(1, vcount(net.bg):2))
 plot(net.bg, layout=l)
 
 # This layout is just an example and not very helpful - thankfully
-# igraph has a number of built-in layouts, including:
+# 'igraph' has a number of built-in layouts, including:
 
 # Randomly placed vertices
 l <- layout_randomly(net.bg)
@@ -489,11 +509,18 @@ dev.off()
 l <- layout_with_kk(net.bg)
 plot(net.bg, layout=l)
 
+#The MDS (multidimensional scaling) algorithm tries to place nodes based on some
+# measure of similarity or distance between them. More similar nodes are plotted 
+# closer to each other. By default, the measure used is based on the shortest 
+#paths between nodes in the network. That can be changed with the 'dist' parameter.
+plot(net.bg, layout=layout_with_mds)
+
 # The LGL algorithm is for large connected graphs. Here you can specify a root - 
 # the node that will be placed in the middle of the layout.
 plot(net.bg, layout=layout_with_lgl)
 
-# By default, igraph uses a layout called layout_nicely which selects
+
+# By default, igraph uses a layout called 'layout_nicely' which selects
 # an appropriate layout algorithm based on the properties of the graph. 
 
 # Check out all available layouts in igraph:
@@ -540,7 +567,7 @@ plot(net.sp)
 
 
 # Another way to think about this is to plot the two tie types 
-# (hyperlink & mention) separately:
+# (hyperlinks and mentions) separately:
 
 E(net)$width <- 2
 plot(net, edge.color=c("dark red", "slategrey")[(E(net)$type=="hyperlink")+1],
@@ -575,6 +602,7 @@ dev.off()
 # Community detection based on label propagation:
 clp <- cluster_label_prop(net)
 class(clp)
+clp$membership
 
 # Community detection returns an object of class "communities" 
 # which igraph knows how to plot: 
@@ -712,7 +740,7 @@ V(net2)$label.font=2
 
 plot(net2, vertex.label.color="white", vertex.size=(2-V(net2)$type)*8) 
 
-# igraph has a built-in bipartite layoyt, though it's not the most helpful:
+# igraph has a built-in bipartite layout, though it's not the most helpful:
 plot(net2, vertex.label=NA, vertex.size=7, layout=layout_as_bipartite) 
 
  
@@ -783,9 +811,9 @@ detach("package:igraph")
 
 # ================ 5. Quick example using the 'network' package ================
 
-# Plotting with the 'network' package is very similar to that with igraph -
+# Plotting with the 'network' package is very similar to that with 'igraph' -
 # although the notation is slightly different (a whole new set of parameter names!)
-# Here is a quick example using the (by now familiar) media network.
+# Here is a quick example using the (by now very familiar) media network.
 
 #Just in case we have forgotten this earlier:
 dev.off()
@@ -850,6 +878,7 @@ library("igraph")
 
 # In order for this to work, you need not only the R package, but also
 # an additional software called ImageMagick from imagemagick.org 
+# If you don't already have it, skip this part of the tutorial for now.
 
 ani.options("convert") # Check that the package knows where to find ImageMagick
 ani.options(convert="C:/Program Files/ImageMagick-6.8.8-Q16/convert.exe") 
@@ -895,12 +924,13 @@ library("visNetwork")
 head(links)
 head(nodes)
 
-# We can visualize the network right away - visNetwork will accept our 
-# node and link data frames:
+# We can visualize the network right away - visNetwork() will accept 
+# our node and link data frames (it needs node data with an 'id' column,
+# and edge data with 'from' and 'to' columns).
 
 visNetwork(nodes, links)
 
-# We can set the height and width of the window visNetwork takes 
+# We can set the height and width of the window visNetwork() takes 
 # with parameters 'hight' and 'width', and the title with 'main'
 
 visNetwork(nodes, links, height="600px", width="100%", main="Network!")
@@ -927,7 +957,7 @@ nodes$size <- nodes$audience.size # Node size
 nodes$borderWidth <- 2 # Node border width
  
 
-# With visNetwork, we can set the color for several elements of the nodes:
+# We can set the color for several elements of the nodes:
 # "background" changes the node color, "border" changes the frame color;
 # "highlight" sets the color on click, "hover" sets the color on mouseover.
 
@@ -938,7 +968,7 @@ nodes$color.highlight.border <- "darkred"
 
 visNetwork(nodes, links)
 
-# Below we change some of the visual properties of edges:
+# Below we change some of the visual properties of the edges:
 
 links$width <- 1+links$weight/8 # line width
 links$color <- "gray"    # line color  
@@ -948,14 +978,14 @@ links$shadow <- FALSE    # edge shadow
 
 visNetwork(nodes, links)
   
-# We will remove the arrows and set the edge width to 1:
+# Remove the arrows and set the edge width to 1:
 links$arrows <- "" 
 links$width  <- 1
  
 
 # 'visNetwork' offers a number of other options, including
 # highlighting the neighbors of a selected node, or adding 
-# a drop-down box to select groups of nodes. The groups are
+# a drop-down menu to select groups of nodes. The groups are
 # based on a column from our data - here the type label.
 
 visNetwork(nodes, links) %>%
@@ -986,18 +1016,20 @@ detach("package:visNetwork")
 library("ndtv")
 
 # You should not need additional software to produce web animations with 'ndtv' (below).
-# If you want to save the animations as  video  files ( see ?saveVideo), you
-# would have to install a video converter called FFmpeg (http://ffmpg.org) 
-# To find out how to get the right installation for your OS, check out ?install.ffmpeg
-# To use all available layouts, you would need to have Java installed on your machine.
+# If you want to save the animations as  video  files ( see ?saveVideo), you have to
+# install a video converter called FFmpeg (ffmpg.org). To find out how to get the right 
+# installation for your OS, check out ?install.ffmpeg  To use all available layouts, 
+# you need to have Java installed on your machine.
 
 
 # Remember net3, our original media network turned into a 'network' object:
 net3 
 
+# Let's create an interactive (but not yet dynamic!) visualization of net3.
 # You will recognize a lot of the plotting parameters from 'network':
-# Two new parameters set the tooltips (the labels you see when you 
-# click on network elements) - note that those take html format.
+# Two new parameters set the tooltips (the popup labels you see when you 
+# click on network elements); note that those can take html format.
+# 'launchBrowser=T' will open file 'filename' in your default browser.
 
 render.d3movie(net3, usearrows = F, displaylabels = F, bg="#111111", 
                vertex.border="#ffffff", vertex.col =  net3 %v% "col",
@@ -1011,36 +1043,45 @@ render.d3movie(net3, usearrows = F, displaylabels = F, bg="#111111",
 
     
 # If you are going to embed this in a markdown document, 
-# you would also need to use output.mode='inline' above.
+# you would also need to add output.mode='inline' above.
 
 
 # ------->> # Network evolution animations -------- 
 
 
-# In order to work with the network animations in ndtv, we need to understand the 
-# dynamic network format used by Statnet packages, implemented in networkDynamic
+# In order to work with the network animations in 'ndtv', 
+# we need to understand the  dynamic network format used by 
+# Statnet packages, implemented in 'networkDynamic'. It can 
+# represent discrete or continuous longitudinal network structures. 
 
-# Let's look at one of the example datasets included in the package:
+# Let's look at one of the example datasets included in the
+# package, containing simulation data based on the network of
+# business connections among Renaissance Florentine families:
+
 data(short.stergm.sim)
 short.stergm.sim 
 head(as.data.frame(short.stergm.sim))
 
+# We can also use 'network.extract()' to get a network that 
+# only contains elements active at a given point/time interval.
+
 # Plot the network ignoring time (all nodes & edges that were ever present):
 plot(short.stergm.sim)  
 
-# Plot the network at time 1
+# Plot the network at time 1 (at=1):
 plot( network.extract(short.stergm.sim, at=1) )
 
-# Plot nodes & vertices that were active from time 1 to time 5:
+# Plot nodes & edges active for the entire period (`rule=all`) from 1 to 5:
 plot( network.extract(short.stergm.sim, onset=1, terminus=5, rule="all") )
 
-# Plot all nodes and vertices that were active between time 1 & 10:
+#Plot nodes & edges active at any point (`rule=any`) between 1 and 10:
 plot( network.extract(short.stergm.sim, onset=1, terminus=10, rule="any") ) 
 
 # Let's make a quick d3 animation from the example network:
 render.d3movie(short.stergm.sim,displaylabels=TRUE) 
 
-# We are now ready to create and animate our own dynamic network.
+
+# Next, we will create and animate our own dynamic network.
 
 # Dynamic network object can be generated in a number of ways: from 
 # a set of networks/matrices representing different time points, or from
@@ -1054,6 +1095,8 @@ vs <- data.frame(onset=0, terminus=50, vertex.id=1:17)
 es <- data.frame(onset=1:49, terminus=50, 
                  head=as.matrix(net3, matrix.type="edgelist")[,1],
                  tail=as.matrix(net3, matrix.type="edgelist")[,2])
+head(vs)
+head(es)
 
 net3.dyn <- networkDynamic(base.net=net3, edge.spells=es, vertex.spells=vs)
 
@@ -1062,14 +1105,8 @@ net3.dyn <- networkDynamic(base.net=net3, edge.spells=es, vertex.spells=vs)
 plot(net3.dyn, vertex.cex=(net3 %v% "audience.size")/7, vertex.col="col")
 
 
-# Plot the network as it looks during different time windows or at different time points.
+# Plot static images showing network evolution:
 
-# We can pre-compute the animation coordinates (otherwise they get calculated when 
-# you generate the animation). Here 'animation.mode' is the layout algorithm - 
-# one of "kamadakawai", "MDSJ", "Graphviz"and "useAttribute" (user-generated).
-# 'interval' is the time between layouts, 'aggregate.dur' is the time shown
-# in each layout, 'rule' is the rule for displaying elements (e.g. 'any': active
-# at any time during that period, 'all' active the entire period, etc.
 
 compute.animation(net3.dyn, animation.mode = "kamadakawai",
                   slice.par=list(start=0, end=49, interval=10, 
@@ -1079,6 +1116,17 @@ compute.animation(net3.dyn, animation.mode = "kamadakawai",
  filmstrip(net3.dyn, displaylabels=F, mfrow=c(2, 3),
            slice.par=list(start=0, end=49, interval=10, 
                          aggregate.dur=10, rule='any'))
+ 
+# We can pre-compute the animation coordinates (otherwise they get calculated when 
+# you generate the animation). Here 'animation.mode' is the layout algorithm - 
+# one of "kamadakawai", "MDSJ", "Graphviz"and "useAttribute" (user-generated).
+
+# Here 'slice.par' is a list of parameters controlling how the network visualization 
+# moves through time. The parameter 'interval' is the time step between layouts, 
+# 'aggregate.dur' is the period shown in each layout, 'rule' is the rule for 
+# displaying elements (e.g. 'any': active at any point during that period, 
+# 'all': active during the entire period, etc.)
+ 
 
 # Let's make an actual animation: 
  
@@ -1105,10 +1153,11 @@ render.d3movie(net3.dyn, usearrows = F,
 
 # In addition to dynamic nodes and edges, 'ndtv' takes dynamic attributes.
 # We could have added those to the 'es' and 'vs' data frames above.
-# In addition, the plotting function can evaluate special parameters
+# However, the plotting function can also evaluate parameters
 # and generate dynamic arguments on the fly. For example,
 # function(slice) { do some calculations with slice } will perform operations
-# on the current time slice, allowing us to change parameters dynamically.
+# on the current time slice network, letting us change parameters dynamically.
+
 # See the node size below:
 
 compute.animation(net3.dyn, animation.mode = "kamadakawai",
@@ -1137,6 +1186,7 @@ render.d3movie(net3.dyn, usearrows = F,
 
 
 # The example below plots a network on a map using base R and mapping libraries.
+
 # Note that for those familiar with it, the package 'ggplot2' may provide 
 # a more flexible way of doing this. Things there work similarly to below,
 # but you would use borders() to plot the map and geom_path() for the edges.
@@ -1144,11 +1194,9 @@ render.d3movie(net3.dyn, usearrows = F,
 
 rm(list = ls()) # clear the workspace 
 
-# In order to plot on maps, we'll need two additional packages: 
-# 'maps' will help us generate a geographic map to use as a background
-# 'geosphere' will help us create arcs representing the network edges
 
-# If you do not already have them, install the following packages:
+# In order to plot on a map, we'll need two additional packages.
+# If you do not already have them, install those now:
 # install.packages("maps")
 # install.packages("geosphere")
 
@@ -1156,9 +1204,8 @@ library("maps")
 library("geosphere")
 
 # Package 'maps' has built-in maps it can plot for you. For example:
-# ('col' is the map fill, 'border' is the border color, 'bg' is the background color
+# ('col' is map fill, 'border' is  border color, 'bg' is  background color)
 par(mfrow = c(2,2))
-
 map("usa", col="tomato",  border="gray10", fill=TRUE, bg="gray30")
 map("state", col="orange",  border="gray10", fill=TRUE, bg="gray30")
 map("county", col="palegreen",  border="gray10", fill=TRUE, bg="gray30")
@@ -1168,7 +1215,7 @@ dev.off()
 
 # The data we will use contains US airports and flights among them. 
 # The airport file includes info about latitude and longitude.
-# If we did not have those, we could use geocode() from `ggmap' 
+# If we did not have those, we could use 'geocode()' from 'ggmap'
 # to get latitude and longitude for an address.
 
 airports <- read.csv("./Data Files/Dataset3-Airlines-NODES.csv", header=TRUE) 
