@@ -234,7 +234,7 @@ plot(net) # not pretty!
 # Removing loops from the graph:
 net <- simplify(net, remove.multiple = F, remove.loops = T) 
 
-# Let's and reduce the arrow size and remove the labels:
+# Let's reduce the arrow size and remove the labels:
 plot(net, edge.arrow.size=.4,vertex.label=NA)
  
 
