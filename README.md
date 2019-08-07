@@ -1,7 +1,7 @@
 # R-Network-Visualization-Workshop
 
-<i> [Updated June 2018] </i><br>
-Static and dynamic network visualization with R - <b>new</b> code and tutorial from my 2018 Polnet workshop.<br>
+<i> [Updated July 2019] </i><br>
+Static and dynamic network visualization with R - <b>new</b> code and tutorial from my 2019 Sunbelt workshop.<br>
 The examples use packages <i>igraph</i>, <i>network</i>, <i>visNetwork</i>, and <i>ndtv</i>, among others.
 
 <h3>Network visualization with R</h3>
